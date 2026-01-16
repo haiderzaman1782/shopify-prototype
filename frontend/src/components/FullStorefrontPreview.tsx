@@ -54,7 +54,12 @@ const FullStorefrontPreview: React.FC<FullStorefrontPreviewProps> = ({
     // Position
     if (navbarSettings.style === 'sticky') {
       baseStyles.position = 'sticky';
-      baseStyles[navbarSettings.position] = 0;
+      const position = navbarSettings.position as 'top' | 'bottom' | 'left' | 'right';
+      if (position === 'top' || position === 'bottom' || position === 'left' || position === 'right') {
+        baseStyles[position] = 0;
+      } else {
+        baseStyles.top = 0; // Default fallback
+      }
       baseStyles.zIndex = 10;
     } else {
       baseStyles.position = 'static';
