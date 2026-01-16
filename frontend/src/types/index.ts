@@ -15,6 +15,7 @@ export interface Store {
   logo: string;
   tagline?: string;
   description?: string;
+  banner?: string;
   colors: {
     primary: string;
     secondary: string;
