@@ -29,11 +29,15 @@ const Storefront: React.FC<StorefrontProps> = () => {
   const theme = getTheme(currentTenant.theme);
 
   // Check for custom theme
-  const customThemes = JSON.parse(localStorage.getItem('customThemes') || '{}');
+  const customThemes = typeof window !== 'undefined' 
+    ? JSON.parse(localStorage.getItem('customThemes') || '{}')
+    : {};
   const activeTheme = customThemes[currentTenant.theme] || theme;
 
   // Get layout settings
-  const layoutSettings: any = JSON.parse(localStorage.getItem('layoutSettings') || '{}');
+  const layoutSettings: any = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('layoutSettings') || '{}')
+    : {};
   const navbarSettings = layoutSettings.navbar || {
     visible: true,
     style: 'sticky' as const,

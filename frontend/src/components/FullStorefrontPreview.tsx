@@ -13,7 +13,9 @@ const FullStorefrontPreview: React.FC<FullStorefrontPreviewProps> = ({
   const theme = customTheme || baseTheme;
 
   // Get layout settings
-  const layoutSettings: any = JSON.parse(localStorage.getItem('layoutSettings') || '{}');
+  const layoutSettings: any = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('layoutSettings') || '{}')
+    : {};
   const navbarSettings = layoutSettings.navbar || { visible: true, style: 'sticky', position: 'top' };
 
   const previewProducts = tenant?.products || [
