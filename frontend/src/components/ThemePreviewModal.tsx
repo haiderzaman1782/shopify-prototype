@@ -16,7 +16,9 @@ const ThemePreviewModal: React.FC<ThemePreviewModalProps> = ({
   const theme = getTheme(themeName);
 
   // Check for custom theme
-  const customThemes = JSON.parse(localStorage.getItem('customThemes') || '{}');
+  const customThemes = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('customThemes') || '{}')
+    : {};
   const activeTheme = customThemes[themeName] || theme;
   const isActive = currentTenant.theme === themeName;
 

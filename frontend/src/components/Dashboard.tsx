@@ -30,7 +30,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
   }, [currentTenant, store]);
   
   // Get custom themes
-  const customThemes: Record<string, Theme> = JSON.parse(localStorage.getItem('customThemes') || '{}');
+  const customThemes: Record<string, Theme> = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('customThemes') || '{}')
+    : {};
   
   // Helper to get theme (custom or default)
   const getThemeForDisplay = (themeKey: string): Theme => {

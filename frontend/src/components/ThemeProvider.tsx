@@ -10,7 +10,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const baseTheme = getTheme(currentTenant.theme);
   
   // Check for custom theme
-  const customThemes: Record<string, Theme> = JSON.parse(localStorage.getItem('customThemes') || '{}');
+  const customThemes: Record<string, Theme> = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('customThemes') || '{}')
+    : {};
   const theme = customThemes[currentTenant.theme] || baseTheme;
 
   const themeStyles: React.CSSProperties = {

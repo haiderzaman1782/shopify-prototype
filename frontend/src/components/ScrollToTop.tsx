@@ -8,7 +8,9 @@ const ScrollToTop: React.FC<ScrollToTopProps> = () => {
   const theme = getTheme(currentTenant.theme);
 
   // Check for custom theme
-  const customThemes = JSON.parse(localStorage.getItem('customThemes') || '{}');
+  const customThemes = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('customThemes') || '{}')
+    : {};
   const activeTheme = customThemes[currentTenant.theme] || theme;
 
   const [isVisible, setIsVisible] = useState(false);
