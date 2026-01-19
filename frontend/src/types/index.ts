@@ -176,21 +176,23 @@ export interface TenantContextType {
 }
 
 // Component Props Types
-export interface MarketplaceProps {}
+export interface MarketplaceProps { }
 
-export interface LoginProps {}
+export interface LoginProps { }
 
-export interface CartProps {}
+export interface CartProps { }
 
-export interface DashboardProps {}
+export interface DashboardProps { }
 
-export interface StorefrontProps {}
+export interface StorefrontProps {
+  storeId?: string | number;
+}
 
-export interface AdminPanelProps {}
+export interface AdminPanelProps { }
 
-export interface StoreEditorProps {}
+export interface StoreEditorProps { }
 
-export interface ProductEditorProps {}
+export interface ProductEditorProps { }
 
 export interface ThemeEditorProps {
   themeName: string;
@@ -223,7 +225,7 @@ export interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
-export interface ScrollToTopProps {}
+export interface ScrollToTopProps { }
 
 // Store response from marketplace API
 export interface MarketplaceStore {

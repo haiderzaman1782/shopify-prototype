@@ -7,11 +7,11 @@ export const getAllStores = async (req, res) => {
       .from('stores')
       .select('store_id, store_data, created_at')
       .order('created_at', { ascending: false });
-    
+
     if (error) {
       throw error;
     }
-    
+
     // Format stores with products
     const formattedStores = stores.map(store => ({
       store_id: store.store_id,
@@ -25,10 +25,10 @@ export const getAllStores = async (req, res) => {
         store_logo: store.store_data?.logo || '🏪'
       }))
     }));
-    
+
     // Flatten all products from all stores
     const allProducts = formattedStores.flatMap(store => store.products);
-    
+
     res.json({
       stores: formattedStores,
       products: allProducts,
@@ -37,7 +37,7 @@ export const getAllStores = async (req, res) => {
     });
   } catch (error) {
     console.error('Get all stores error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
@@ -48,18 +48,18 @@ export const getAllStores = async (req, res) => {
 export const searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
-    
+
     const { data: stores, error } = await supabase
       .from('stores')
       .select('store_id, store_data');
-    
+
     if (error) {
       throw error;
     }
-    
+
     const searchTerm = query?.toLowerCase() || '';
     const allProducts = [];
-    
+
     stores.forEach(store => {
       const products = store.store_data?.products || [];
       products.forEach(product => {
@@ -77,7 +77,7 @@ export const searchProducts = async (req, res) => {
         }
       });
     });
-    
+
     res.json({
       products: allProducts,
       count: allProducts.length,
@@ -85,10 +85,43 @@ export const searchProducts = async (req, res) => {
     });
   } catch (error) {
     console.error('Search products error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
 
+// Get a single store by ID (public, no auth required)
+export const getPublicStore = async (req, res) => {
+  try {
+    const { storeId } = req.params;
+
+    const { data: store, error } = await supabase
+      .from('stores')
+      .select('store_id, store_data, created_at')
+      .eq('store_id', storeId)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return res.status(404).json({ error: 'Store not found' });
+      }
+      throw error;
+    }
+
+    const formattedStore = {
+      store_id: store.store_id,
+      ...store.store_data,
+      created_at: store.created_at
+    };
+
+    res.json(formattedStore);
+  } catch (error) {
+    console.error('Get public store error:', error);
+    res.status(500).json({
+      error: 'Server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};

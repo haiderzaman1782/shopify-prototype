@@ -7,6 +7,7 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import api from '@/lib/api';
 import Swal from 'sweetalert2';
 import { Product, MarketplaceStore, MarketplaceResponse, MarketplaceProps } from '@/src/types';
+import ProductDetail from './ProductDetail';
 
 const Marketplace: React.FC<MarketplaceProps> = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -15,8 +16,12 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStore, setSelectedStore] = useState<string>('all');
   const [stores, setStores] = useState<MarketplaceStore[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const { addToCart, getCartCount } = useCart();
   const { user } = useAuth();
+
 
   useEffect(() => {
     fetchAllProducts();
@@ -177,40 +182,68 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
                 key={`${product.store_id}-${product.id}`}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
               >
-                {product.image ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">No Image</span>
-                  </div>
-                )}
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm">{product.store_logo}</span>
-                    <span className="text-xs text-gray-500">{product.store_name}</span>
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">{product.name.slice(0, 20)}..</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {product.description.slice(0, 30)}...
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold text-blue-600">
-                      ${product.price?.toFixed(2)}
-                    </span>
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://via.placeholder.com/300x200?text=No+Image';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-400">No Image</span>
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <Link
+                      href={`/store/${product.store_id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity"
                     >
-                      Add to Cart
-                    </button>
+                      <span className="text-xl" title={product.store_name}>
+                        {product.store_logo || '🏪'}
+                      </span>
+                      <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                        {product.store_name}
+                      </span>
+                    </Link>
+                    <h3 className="font-semibold text-lg mb-2">{product.name.slice(0, 20)}..</h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {product.description.slice(0, 30)}...
+                    </p>
+                    <div className="flex justify-between items-center mt-4">
+                      <span className="text-lg font-bold text-gray-900">
+                        ${product.price?.toFixed(2)}
+                      </span>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/store/${product.store_id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-3 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition-colors text-xs font-medium"
+                        >
+                          Visit Store
+                        </Link>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                          className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs font-medium"
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -218,10 +251,22 @@ const Marketplace: React.FC<MarketplaceProps> = () => {
           </div>
         )}
       </div>
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductDetail
+          product={selectedProduct}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 };
 
 export default Marketplace;
+
 
 
