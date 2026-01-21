@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError } from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://shopify-prototype-82f8.onrender.com/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ;
 
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,

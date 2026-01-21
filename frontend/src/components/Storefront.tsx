@@ -8,7 +8,7 @@ import { useTenant } from '@/src/contexts/TenantContext';
 import { useContent } from '@/src/contexts/ContentContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { getTheme } from '@/src/themes/themes';
-import { StorefrontProps, Product, Store } from '@/src/types';
+import { StorefrontProps, Product, Store, Theme } from '@/src/types';
 import ProductDetail from './ProductDetail';
 import api from '@/lib/api';
 
@@ -22,6 +22,53 @@ const Storefront: React.FC<StorefrontProps> = ({ storeId }) => {
 
   const [publicStore, setPublicStore] = useState<Store | null>(null);
   const [publicLoading, setPublicLoading] = useState(!!storeId);
+  const [customThemes, setCustomThemes] = useState<Record<string, Theme>>({});
+
+  // Load custom themes and listen for changes
+  useEffect(() => {
+    const loadCustomThemes = () => {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('customThemes');
+        if (saved) {
+          try {
+            setCustomThemes(JSON.parse(saved));
+          } catch (error) {
+            console.error('Failed to parse custom themes:', error);
+          }
+        }
+      }
+    };
+
+    loadCustomThemes();
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'customThemes' && e.newValue) {
+        try {
+          setCustomThemes(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error('Failed to parse updated custom themes:', error);
+        }
+      }
+    };
+
+    const handleThemeChange = (e: CustomEvent) => {
+      if (e.detail && e.detail.themeName && e.detail.theme) {
+        setCustomThemes(prev => ({
+          ...prev,
+          [e.detail.themeName]: e.detail.theme
+        }));
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleStorageChange);
+      window.addEventListener('themeChanged', handleThemeChange as EventListener);
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('themeChanged', handleThemeChange as EventListener);
+      };
+    }
+  }, []);
 
   const {
     navigation: contextNavigation,
@@ -66,7 +113,7 @@ const Storefront: React.FC<StorefrontProps> = ({ storeId }) => {
   const contentLoadingFinal = storeId ? publicLoading : contentLoading;
 
   const theme = getTheme(store?.theme || 'modern');
-  const activeTheme = theme; // Skip custom localStorage themes for public view for simplicity
+  const activeTheme = customThemes[store?.theme || 'modern'] || theme;
 
   // Default layout settings or from store data
   const layoutSettings = {

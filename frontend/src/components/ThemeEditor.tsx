@@ -38,6 +38,13 @@ const ThemeEditor: React.FC<ThemeEditorProps> = ({ themeName, onClose }) => {
     setCustomThemes(updatedCustomThemes);
     localStorage.setItem('customThemes', JSON.stringify(updatedCustomThemes));
 
+    // Dispatch custom event to trigger immediate theme updates
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('themeChanged', { 
+        detail: { themeName, theme: editedTheme } 
+      }));
+    }
+
     if (currentTenant.theme === themeName) {
       await updateTenantTheme(currentTenant.theme);
     }
