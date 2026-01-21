@@ -1,5 +1,8 @@
 # 🛒 Multi-Tenant E-Commerce Platform
 
+[![Live Demo](https://img.shields.io/badge/demo-live-success)]([https://shopify-prototype.vercel.app/])
+[![Vercel](https://img.shields.io/badge/deployed-vercel-black)](https://vercel.com)
+
 A **full-stack, multi-tenant e-commerce platform** that enables users to create, customize, and manage independent online stores from a single system.
 
 Designed for scalability, flexibility, and modern SaaS-style commerce solutions.
