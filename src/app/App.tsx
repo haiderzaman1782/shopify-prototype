@@ -78,8 +78,8 @@ const FadeInSection = ({ children, delay = 0, direction = "up" }: { children: Re
   const variants = {
     hidden: {
       opacity: 0,
-      y: direction === "up" ? 50 : direction === "down" ? -50 : 0,
-      x: direction === "left" ? 50 : direction === "right" ? -50 : 0,
+      y: direction === "up" ? 30 : direction === "down" ? -30 : 0,
+      x: direction === "left" ? 30 : direction === "right" ? -30 : 0,
     },
     visible: {
       opacity: 1,
@@ -208,7 +208,7 @@ export default function App() {
   ];
 
   return (
-    <div style={{ 
+    <div className="overflow-x-hidden" style={{ 
       backgroundColor: 'var(--saas-dark-bg)', 
       color: 'var(--saas-text)'
     }}>
@@ -446,7 +446,7 @@ export default function App() {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24">
+      <section id="features" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 sm:mb-20">
             <FadeInSection>
@@ -510,7 +510,7 @@ export default function App() {
       </section>
 
       {/* Customer Story */}
-      <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24">
+      <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <FadeInSection direction="right">
@@ -564,7 +564,7 @@ export default function App() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24">
+      <section id="testimonials" className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-16 xl:px-24 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 sm:mb-20">
             <FadeInSection>
@@ -1127,10 +1127,11 @@ function TestimonialCard({ name, role, review, rating, date, index }: { name: st
   return (
     <motion.div
       custom={index}
-      initial={{ opacity: 0, x: 60 }}
+      initial={{ opacity: 0, x: 20, y: 20 }}
       whileInView={{
         opacity: 1,
         x: 0,
+        y: 0,
         transition: { delay: index * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }
       }}
       viewport={{ once: true, margin: "-50px" }}

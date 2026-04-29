@@ -11,7 +11,7 @@
   --saas-hover-bg: #1a1a17;
   --saas-input-bg: #111110;
   --saas-inner-bg: #181815;
-  
+
   /* Original theme variables */
   --font-size: 16px;
   --background: #0a0a08;
@@ -66,7 +66,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  
+
   --font-syne: "Syne", sans-serif;
   --font-dm-sans: "DM Sans", sans-serif;
 }
@@ -101,7 +101,8 @@
     @apply text-xl md:text-2xl lg:text-3xl font-bold leading-snug;
   }
 
-  p, body {
+  p,
+  body {
     @apply text-sm md:text-base lg:text-lg leading-relaxed;
   }
 
@@ -109,7 +110,8 @@
     @apply text-xs md:text-sm lg:text-base;
   }
 
-  button, a {
+  button,
+  a {
     @apply touch-manipulation;
   }
 }
@@ -119,7 +121,7 @@
   .section-padding {
     @apply py-12 px-4 md:py-16 md:px-8 lg:py-24 lg:px-16 xl:py-32 xl:px-24;
   }
-  
+
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
@@ -127,13 +129,16 @@
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: var(--saas-card-bg);
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: var(--saas-border);
     border-radius: 10px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--saas-muted);
   }
