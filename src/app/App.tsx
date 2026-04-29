@@ -807,11 +807,10 @@ const ContactFormModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () =>
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/info.proximux@gmail.com", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       });
