@@ -123,4 +123,18 @@
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--saas-card-bg);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--saas-border);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--saas-muted);
+  }
 }

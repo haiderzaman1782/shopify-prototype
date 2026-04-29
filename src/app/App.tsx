@@ -15,7 +15,9 @@ import {
   Code2,
   Smartphone,
   Youtube,
-  Mail
+  Mail,
+  Phone,
+  MessageSquare
 } from 'lucide-react';
 
 // --- Premium Animation Components ---
@@ -47,9 +49,9 @@ const HeadingReveal = ({ text, delay = 0, className = "" }: { text: string, dela
   const words = text.split(" ")
 
   return (
-    <h2 ref={ref} className={`flex flex-wrap gap-x-2 sm:gap-x-3 ${className}`}>
+    <h2 ref={ref} className={`flex flex-wrap gap-x-1.5 sm:gap-x-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold ${className}`}>
       {words.map((word, i) => (
-        <span key={i} className="overflow-hidden inline-block">
+        <span key={i} className="overflow-hidden inline-block h-fit py-1">
           <motion.span
             className="inline-block"
             initial={{ y: "100%" }}
@@ -59,6 +61,7 @@ const HeadingReveal = ({ text, delay = 0, className = "" }: { text: string, dela
               delay: delay + i * 0.07,
               ease: [0.22, 1, 0.36, 1]
             }}
+            style={{ fontSize: 'inherit' }}
           >
             {word}
           </motion.span>
@@ -130,6 +133,8 @@ export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const statsRef = useRef(null);
   const isInView = useInView(statsRef, { once: true, margin: "-100px" });
@@ -161,12 +166,45 @@ export default function App() {
     { name: "FAQs", href: "#faq" }
   ];
 
+
   const services = [
-    { title: "Marketing That Converts", desc: "We craft paid and organic strategies that put your brand in front of the right audience at the right time.", icon: <TrendingUp className="w-16 h-16 sm:w-20 sm:h-20 text-[var(--saas-lime)] opacity-80" /> },
-    { title: "Web Dev, Done Right", desc: "From landing pages to full-stack platforms — clean code, fast load times, zero fluff.", icon: <Code2 className="w-16 h-16 sm:w-20 sm:h-20 text-[var(--saas-lime)] opacity-80" />, badge: "High Performance" },
-    { title: "Apps People Actually Use", desc: "iOS & Android apps designed around user behavior, not just aesthetics.", icon: <Smartphone className="w-16 h-16 sm:w-20 sm:h-20 text-[var(--saas-lime)] opacity-80" /> },
-    { title: "YouTube on Autopilot", desc: "We script, edit, and upload — you collect the views, subscribers, and ad revenue.", icon: <Youtube className="w-20 h-20 sm:w-24 sm:h-24 text-[var(--saas-lime)] opacity-80" />, isWide: true },
-    { title: "Email That Sells", desc: "Automated sequences, newsletters, and drip campaigns engineered for maximum ROI.", icon: <Mail className="w-16 h-16 sm:w-20 sm:h-20 text-[var(--saas-lime)] opacity-80" /> }
+    { 
+      title: "Marketing That Converts", 
+      desc: "We craft paid and organic strategies that put your brand in front of the right audience at the right time.", 
+      icon: <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--saas-lime)]" />,
+      fullDesc: "Stop throwing money at ads that don't work. Our conversion-focused marketing engine combines deep audience research with high-performance creative to deliver consistent ROI. We handle everything from account setup to daily optimization, ensuring your brand stays ahead of the competition.",
+      features: ["Meta & Google Ads Management", "Search Engine Optimization (SEO)", "Social Media Strategy", "Conversion Rate Optimization (CRO)", "Analytics & Data Reporting"]
+    },
+    { 
+      title: "Web Dev, Done Right", 
+      desc: "From landing pages to full-stack platforms — clean code, fast load times, zero fluff.", 
+      icon: <Code2 className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--saas-lime)]" />, 
+      badge: "High Performance",
+      fullDesc: "Your website is your 24/7 salesperson. We build blazing-fast, SEO-friendly, and highly-converting websites using modern technologies like Next.js, React, and Tailwind CSS. No templates, just custom solutions tailored to your specific business goals.",
+      features: ["Next.js & React Development", "E-commerce Solutions", "Custom CMS Integration", "Performance Optimization", "Responsive & Mobile-First Design"]
+    },
+    { 
+      title: "Apps People Actually Use", 
+      desc: "iOS & Android apps designed around user behavior, not just aesthetics.", 
+      icon: <Smartphone className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--saas-lime)]" />,
+      fullDesc: "We build intuitive and powerful mobile applications for iOS and Android. Our process focuses on user experience (UX) and performance, ensuring your app isn't just downloaded, but used every single day by your target audience.",
+      features: ["Cross-Platform Development", "User Interface (UI) Design", "Backend API Integration", "App Store Optimization", "Ongoing Maintenance & Support"]
+    },
+    { 
+      title: "YouTube on Autopilot", 
+      desc: "We script, edit, and upload — you collect the views, subscribers, and ad revenue.", 
+      icon: <Youtube className="w-16 h-16 sm:w-20 sm:h-20 text-[var(--saas-lime)]" />, 
+      isWide: true,
+      fullDesc: "YouTube is the new TV. We help you build a profitable YouTube presence without you ever having to show your face or touch an editing software. Our team handles the strategy, niche research, scripting, professional voiceover, and high-quality editing.",
+      features: ["Niche Research & Strategy", "Professional Scriptwriting", "Voiceover & AI Integration", "High-Retention Video Editing", "Thumbnail & Metadata Optimization"]
+    },
+    { 
+      title: "Email That Sells", 
+      desc: "Automated sequences, newsletters, and drip campaigns engineered for maximum ROI.", 
+      icon: <Mail className="w-12 h-12 sm:w-16 sm:h-16 text-[var(--saas-lime)]" />,
+      fullDesc: "Email marketing has the highest ROI of any digital channel. We build automated funnels that nurture leads and close sales while you sleep. From welcome sequences to abandoned cart recovery, we've got you covered with high-converting copy.",
+      features: ["Email Automation Setup", "High-Converting Copywriting", "List Segmentation", "A/B Testing & Optimization", "Newsletter Strategy & Management"]
+    }
   ];
 
   return (
@@ -211,8 +249,7 @@ export default function App() {
               display: 'inline-block'
             }}></span>
           </div>
-          
-          <div className="hidden md:flex items-center gap-6 lg:gap-8 text-sm lg:text-base">
+                 <div className="hidden md:flex items-center gap-6 lg:gap-8 text-sm lg:text-base">
             {navLinks.map((link, i) => (
               <motion.a
                 key={link.name}
@@ -226,17 +263,17 @@ export default function App() {
               </motion.a>
             ))}
           </div>
-
+ 
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.0 }}
             className="hidden md:flex items-center gap-3"
           >
-            <button className="touch-manipulation min-h-[44px] min-w-[44px] px-4 hover:text-[var(--saas-lime)] transition-colors">
-              Login
-            </button>
-            <button className="touch-manipulation min-h-[44px] px-5 sm:px-6 py-2 bg-[var(--saas-lime)] text-black rounded-[24px] text-sm lg:text-base font-medium transition-transform hover:scale-105 active:scale-95">
+            <button 
+              onClick={() => setContactModalOpen(true)}
+              className="touch-manipulation min-h-[44px] px-5 sm:px-6 py-2 bg-[var(--saas-lime)] text-black rounded-[24px] text-sm lg:text-base font-medium transition-transform hover:scale-105 active:scale-95"
+            >
               Get Started
             </button>
           </motion.div>
@@ -263,7 +300,7 @@ export default function App() {
                 padding: '20px'
               }}
             >
-              <div className="flex flex-col gap-4">
+               <div className="flex flex-col gap-4">
                 {navLinks.map((link, i) => (
                   <motion.a 
                     key={link.name}
@@ -278,10 +315,13 @@ export default function App() {
                   </motion.a>
                 ))}
                 <hr className="border-[var(--saas-border)]" />
-                <button className="touch-manipulation min-h-[44px] text-left text-lg">
-                  Login
-                </button>
-                <button className="touch-manipulation min-h-[44px] w-full bg-[var(--saas-lime)] text-black rounded-[24px] font-medium text-lg">
+                <button 
+                  onClick={() => {
+                    setContactModalOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="touch-manipulation min-h-[44px] w-full bg-[var(--saas-lime)] text-black rounded-[24px] font-medium text-lg"
+                >
                   Get Started with PROXIMUX
                 </button>
               </div>
@@ -319,7 +359,7 @@ export default function App() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.8, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="font-syne text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight text-[#f5f5ef] mb-6 sm:mb-8 leading-[1.1]"
+            className="font-syne text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight text-[#f5f5ef] mb-6 sm:mb-8 leading-[1.1]"
           >
             We Build. We Grow. We Automate.
           </motion.h1>
@@ -328,7 +368,7 @@ export default function App() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.0, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--saas-muted)] max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed"
+            className="text-xs sm:text-base md:text-lg lg:text-xl text-[var(--saas-muted)] max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed"
           >
             PROXIMUX is your all-in-one digital growth partner — from stunning websites and apps to automated YouTube channels and email funnels that print revenue.
           </motion.p>
@@ -337,20 +377,21 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.2, duration: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-3 w-full sm:w-auto"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto max-w-[320px] sm:max-w-none mx-auto"
           >
             <input 
               type="email"
               placeholder="Enter your email"
-              className="w-full sm:w-[280px] px-6 py-3 bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-[24px] text-[var(--saas-text)] text-sm sm:text-base outline-none focus:border-[var(--saas-lime)] transition-colors min-h-[44px] touch-manipulation"
+              className="w-full sm:w-[280px] px-5 py-2.5 bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-[24px] text-[var(--saas-text)] text-xs sm:text-base outline-none focus:border-[var(--saas-lime)] transition-colors min-h-[44px] touch-manipulation"
             />
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full sm:w-auto px-8 py-3 bg-[var(--saas-lime)] text-black rounded-[24px] font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-transform min-h-[44px] touch-manipulation"
+              onClick={() => setContactModalOpen(true)}
+              className="w-full sm:w-auto px-6 py-2.5 bg-[var(--saas-lime)] text-black rounded-[24px] font-semibold text-xs sm:text-base flex items-center justify-center gap-2 transition-transform min-h-[44px] touch-manipulation whitespace-nowrap"
             >
-              Get Started with PROXIMUX
-              <ArrowRight size={18} />
+              Get Started
+              <ArrowRight size={16} />
             </motion.button>
           </motion.div>
         </div>
@@ -364,13 +405,13 @@ export default function App() {
               WHAT WE DO
             </p>
           </FadeInSection>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-[400px] sm:max-w-none mx-auto">
             {[
-              { icon: <TrendingUp size={16} />, label: "Marketing" },
-              { icon: <Code2 size={16} />, label: "Web Development" },
-              { icon: <Smartphone size={16} />, label: "App Development" },
-              { icon: <Youtube size={16} />, label: "YouTube Automation" },
-              { icon: <Mail size={16} />, label: "Email Marketing" },
+              { icon: <TrendingUp size={14} />, label: "Marketing" },
+              { icon: <Code2 size={14} />, label: "Web Dev" },
+              { icon: <Smartphone size={14} />, label: "App Dev" },
+              { icon: <Youtube size={14} />, label: "YouTube" },
+              { icon: <Mail size={14} />, label: "Email" },
             ].map((service, i) => (
               <motion.div 
                 key={service.label}
@@ -379,11 +420,11 @@ export default function App() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5, ease: "backOut" }}
                 whileHover={{ 
-                  scale: 1.08, 
+                  scale: 1.05, 
                   borderColor: "var(--saas-lime)",
                   backgroundColor: "rgba(200, 241, 53, 0.1)"
                 }}
-                className="rounded-full border border-[var(--saas-lime)]/30 px-5 py-2 text-sm font-medium tracking-wide text-white transition-colors flex items-center gap-2 touch-manipulation min-h-[44px] cursor-default"
+                className="rounded-full border border-[var(--saas-lime)]/30 px-3.5 py-1.5 text-[10px] sm:text-sm font-medium tracking-wide text-white transition-colors flex items-center gap-1.5 touch-manipulation min-h-[36px] sm:min-h-[44px] cursor-default"
               >
                 <span className="text-[var(--saas-lime)]">{service.icon}</span>
                 {service.label}
@@ -397,7 +438,7 @@ export default function App() {
       <section className="py-16 sm:py-24 lg:py-32 px-4 sm:px-8 bg-[var(--saas-input-bg)] border-y border-[var(--saas-border)]">
         <div className="max-w-3xl mx-auto">
           <FadeInSection delay={0.2}>
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-[var(--saas-muted)] leading-relaxed text-center">
+            <p className="text-base sm:text-xl md:text-2xl lg:text-3xl text-[var(--saas-muted)] leading-relaxed text-center px-4">
               We know what's going on. You need <strong className="text-[var(--saas-text)] uppercase font-extrabold">top-notch digital growth</strong> to stand out in the tech world, but managing multiple agencies is <strong className="text-[var(--saas-text)] uppercase font-extrabold">costly and time-consuming</strong>. That's when <strong className="text-[var(--saas-text)] font-black tracking-tighter">PROXIMUX</strong> comes in.
             </p>
           </FadeInSection>
@@ -433,6 +474,7 @@ export default function App() {
                 visual={service.icon}
                 title={service.title}
                 description={service.desc}
+                onClick={() => setSelectedService(service)}
                 className={`${i === 0 ? "md:rounded-tl-[16px]" : ""} ${i === 2 ? "lg:rounded-tr-[16px]" : ""} ${service.isWide ? "md:col-span-2 lg:col-span-2" : ""} ${i === 4 ? "md:rounded-br-[16px] lg:rounded-br-[16px]" : ""}`}
                 isWide={service.isWide}
               />
@@ -611,15 +653,11 @@ export default function App() {
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[var(--saas-muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
             Join the leading tech companies that trust PROXIMUX for their growth needs.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-3 w-full sm:w-auto">
-            <input 
-              type="email"
-              placeholder="Enter your email"
-              className="w-full sm:w-[300px] px-6 py-4 bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-[24px] text-[var(--saas-text)] text-sm sm:text-base outline-none focus:border-[var(--saas-lime)] transition-colors min-h-[44px] touch-manipulation"
-            />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => setContactModalOpen(true)}
               className="w-full sm:w-auto px-10 py-4 bg-[var(--saas-lime)] text-black rounded-[24px] font-bold text-sm sm:text-base transition-transform min-h-[44px] touch-manipulation shadow-xl shadow-[var(--saas-lime)]/10"
             >
               Get Started with PROXIMUX
@@ -637,7 +675,7 @@ export default function App() {
         className="py-12 sm:py-16 md:py-20 px-4 sm:px-8 lg:px-16 border-t border-[var(--saas-border)]"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 text-center lg:text-left mb-16 lg:mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8 text-center lg:text-left mb-16 lg:mb-24">
             <div className="flex flex-col items-center lg:items-start">
               <div className="flex items-center gap-1 mb-6 text-xl sm:text-2xl font-extrabold font-syne touch-manipulation min-h-[44px]">
                 <span className="text-[#e8e8e0]">PROXIMUX</span>
@@ -650,61 +688,41 @@ export default function App() {
             
             <div className="flex flex-col gap-4">
               <h4 className="text-base sm:text-lg font-bold text-[var(--saas-text)] mb-2">Services</h4>
-              {["Marketing", "Web Development", "App Development"].map((link, i) => (
-                <motion.a 
-                  key={link} href="#" 
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 + i * 0.06 }}
-                  whileHover={{ x: 4, color: "var(--saas-lime)" }}
-                  className="text-sm sm:text-base text-[var(--saas-muted)] transition-colors touch-manipulation min-h-[44px]"
-                >
+              {["Marketing", "Web Development", "App Development", "YouTube Automation", "Email Marketing"].map((link) => (
+                <a key={link} href="#features" className="text-sm sm:text-base text-[var(--saas-muted)] hover:text-[var(--saas-lime)] transition-colors py-1">
                   {link}
-                </motion.a>
+                </a>
               ))}
             </div>
 
             <div className="flex flex-col gap-4">
-              <h4 className="text-base sm:text-lg font-bold text-[var(--saas-text)] mb-2">Capabilities</h4>
-              {["YouTube Automation", "Email Marketing", "Growth Strategy"].map((link, i) => (
-                <motion.a 
-                  key={link} href="#" 
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.06 }}
-                  whileHover={{ x: 4, color: "var(--saas-lime)" }}
-                  className="text-sm sm:text-base text-[var(--saas-muted)] transition-colors touch-manipulation min-h-[44px]"
-                >
-                  {link}
-                </motion.a>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <h4 className="text-base sm:text-lg font-bold text-[var(--saas-text)] mb-2">Support</h4>
-              {["Contact Us", "Privacy Policy", "Terms of Service"].map((link, i) => (
-                <motion.a 
-                  key={link} href="#" 
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.5 + i * 0.06 }}
-                  whileHover={{ x: 4, color: "var(--saas-lime)" }}
-                  className="text-sm sm:text-base text-[var(--saas-muted)] transition-colors touch-manipulation min-h-[44px]"
-                >
-                  {link}
-                </motion.a>
+              <h4 className="text-base sm:text-lg font-bold text-[var(--saas-text)] mb-2">Quick Links</h4>
+              {navLinks.map((link) => (
+                <a key={link.name} href={link.href} className="text-sm sm:text-base text-[var(--saas-muted)] hover:text-[var(--saas-lime)] transition-colors py-1">
+                  {link.name}
+                </a>
               ))}
             </div>
           </div>
           
-          <div className="pt-8 border-t border-[var(--saas-border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-[var(--saas-muted)]">
-            <p>© 2025 PROXIMUX. All rights reserved.</p>
-            <div className="flex gap-6">
-              <motion.a whileHover={{ y: -2, color: "var(--saas-lime)" }} href="#" className="hover:text-[var(--saas-lime)] transition-colors touch-manipulation min-h-[44px]">Twitter</motion.a>
-              <motion.a whileHover={{ y: -2, color: "var(--saas-lime)" }} href="#" className="hover:text-[var(--saas-lime)] transition-colors touch-manipulation min-h-[44px]">LinkedIn</motion.a>
+          <div className="pt-8 border-t border-[var(--saas-border)] flex flex-col md:flex-row items-center justify-between gap-6 text-xs sm:text-sm text-[var(--saas-muted)]">
+            <div className="flex-1 text-center md:text-left">
+              <p>© 2025 PROXIMUX. All rights reserved.</p>
+            </div>
+            
+            <div className="flex-1 text-center font-medium tracking-widest uppercase opacity-60">
+              powered by proximux
+            </div>
+            
+            <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-end gap-4 sm:gap-8">
+              <a href="tel:03194290197" className="hover:text-[var(--saas-lime)] transition-colors flex items-center gap-2">
+                <Phone size={14} />
+                03194290197
+              </a>
+              <a href="mailto:info.proximux@gmail.com" className="hover:text-[var(--saas-lime)] transition-colors flex items-center gap-2">
+                <Mail size={14} />
+                info.proximux@gmail.com
+              </a>
             </div>
           </div>
         </div>
@@ -748,13 +766,277 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Service Modal */}
+      <ServiceModal 
+        service={selectedService} 
+        isOpen={!!selectedService} 
+        onClose={() => setSelectedService(null)} 
+      />
+
+      {/* Contact Form Modal */}
+      <ContactFormModal 
+        isOpen={contactModalOpen} 
+        onClose={() => setContactModalOpen(false)} 
+      />
     </div>
   );
 }
 
 // --- Component Helpers ---
 
-function FeatureCard({ badge, visual, title, description, className }: { badge?: string, visual: React.ReactNode, title: string, description: string, className?: string, isWide?: boolean }) {
+const ContactFormModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/info.proximux@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        setTimeout(() => {
+          onClose();
+          setStatus('idle');
+        }, 3000);
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      alert("Something went wrong. Please try again or email us directly.");
+      setStatus('idle');
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/95 backdrop-blur-md"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+            className="relative z-[111] w-full max-w-lg bg-[var(--saas-card-bg)] border border-[var(--saas-border)] rounded-3xl shadow-2xl overflow-hidden"
+          >
+            <button 
+              onClick={onClose}
+              className="absolute top-6 right-6 text-[var(--saas-muted)] hover:text-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+
+            <div className="p-8 sm:p-10">
+              {status === 'success' ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="py-12 text-center"
+                >
+                  <div className="w-20 h-20 bg-[var(--saas-lime)]/10 text-[var(--saas-lime)] rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Sparkles size={40} />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
+                  <p className="text-[var(--saas-muted)]">We'll get back to you within 24 hours.</p>
+                </motion.div>
+              ) : (
+                <>
+                  <div className="mb-8">
+                    <h2 className="font-syne text-3xl font-extrabold mb-3">Get Started</h2>
+                    <p className="text-[var(--saas-muted)]">Tell us about your project and we'll reach out.</p>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[var(--saas-lime)] mb-2">Full Name</label>
+                      <input 
+                        required
+                        name="name"
+                        type="text" 
+                        placeholder="John Doe"
+                        className="w-full bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-xl px-4 py-3 text-sm focus:border-[var(--saas-lime)] outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[var(--saas-lime)] mb-2">Email Address</label>
+                      <input 
+                        required
+                        name="email"
+                        type="email" 
+                        placeholder="john@example.com"
+                        className="w-full bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-xl px-4 py-3 text-sm focus:border-[var(--saas-lime)] outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-[var(--saas-lime)] mb-2">Project Details</label>
+                      <textarea 
+                        required
+                        name="message"
+                        rows={4}
+                        placeholder="Tell us about your goals..."
+                        className="w-full bg-[var(--saas-input-bg)] border border-[var(--saas-border)] rounded-xl px-4 py-3 text-sm focus:border-[var(--saas-lime)] outline-none transition-colors resize-none"
+                      />
+                    </div>
+                    <button 
+                      disabled={status === 'submitting'}
+                      className="w-full py-4 bg-[var(--saas-lime)] text-black rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                    >
+                      {status === 'submitting' ? (
+                        <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
+                      ) : (
+                        <>
+                          Send Message
+                          <ArrowRight size={18} />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const ServiceModal = ({ service, isOpen, onClose }: { service: any, isOpen: boolean, onClose: () => void }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  if (!service) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/90 backdrop-blur-md"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative z-[101] w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[var(--saas-card-bg)] border border-[var(--saas-border)] rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] p-6 sm:p-10 custom-scrollbar"
+          >
+            <button 
+              onClick={onClose}
+              className="absolute top-6 right-6 text-[var(--saas-muted)] hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"
+            >
+              <X size={24} />
+            </button>
+
+            <div className="flex flex-col gap-6 sm:gap-8">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center bg-[rgba(200,241,53,0.1)] border border-[rgba(200,241,53,0.2)] rounded-2xl text-[var(--saas-lime)]">
+                  {service.icon}
+                </div>
+                <div className="flex-1">
+                  {service.badge && (
+                    <span className="inline-block px-3 py-1 bg-[var(--saas-lime)] text-black rounded-full text-[10px] font-bold uppercase tracking-wider mb-2 sm:mb-3">
+                      {service.badge}
+                    </span>
+                  )}
+                  <h2 className="font-syne text-2xl sm:text-4xl font-extrabold text-[var(--saas-text)] leading-tight">
+                    {service.title}
+                  </h2>
+                </div>
+              </div>
+
+              <div className="space-y-5 sm:space-y-6">
+                <div>
+                  <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-[var(--saas-lime)] font-bold mb-2 sm:mb-3">OVERVIEW</h3>
+                  <p className="text-base sm:text-xl text-[var(--saas-muted)] leading-relaxed font-medium">
+                    {service.fullDesc}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 pt-2 sm:pt-4">
+                  <div>
+                    <h3 className="text-[10px] sm:text-xs uppercase tracking-widest text-[var(--saas-lime)] font-bold mb-3 sm:mb-4">KEY FEATURES</h3>
+                    <div className="space-y-2.5 sm:space-y-3">
+                      {service.features.map((feature: string, i: number) => (
+                        <motion.div 
+                          key={i} 
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 + i * 0.05 }}
+                          className="flex items-center gap-3 text-[var(--saas-text)]"
+                        >
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[rgba(200,241,53,0.1)] flex items-center justify-center text-[var(--saas-lime)]">
+                            <Plus size={10} />
+                          </div>
+                          <span className="text-sm sm:text-lg font-medium">{feature}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-[var(--saas-inner-bg)] p-5 sm:p-6 rounded-2xl border border-[var(--saas-border)]">
+                    <h3 className="font-syne text-lg sm:text-xl font-bold text-[var(--saas-text)] mb-2 sm:mb-3">Ready to scale?</h3>
+                    <p className="text-[var(--saas-muted)] mb-5 sm:mb-6 text-xs sm:text-base leading-relaxed">
+                      Transform your business with our expertise. Let's discuss your specific goals and build a strategy that works.
+                    </p>
+                    <button className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-[var(--saas-lime)] text-black rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-[var(--saas-lime)]/10 flex items-center justify-center gap-2 text-sm sm:text-base">
+                      Book Free Consultation
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+function FeatureCard({ badge, visual, title, description, className, onClick }: { badge?: string, visual: React.ReactNode, title: string, description: string, className?: string, isWide?: boolean, onClick?: () => void }) {
   return (
     <motion.div
       variants={{
@@ -772,7 +1054,8 @@ function FeatureCard({ badge, visual, title, description, className }: { badge?:
         boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
       }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={`p-6 sm:p-8 lg:p-10 transition-all duration-300 relative group flex flex-col h-full bg-[var(--saas-card-bg)] hover:bg-[var(--saas-hover-bg)] ${className}`}
+      onClick={onClick}
+      className={`p-6 sm:p-8 lg:p-10 transition-all duration-300 relative group flex flex-col h-full bg-[var(--saas-card-bg)] hover:bg-[var(--saas-hover-bg)] cursor-pointer ${className}`}
     >
       {badge && (
         <div className="mb-4 inline-block px-3 py-1 bg-[var(--saas-lime)] text-black rounded-full text-[10px] sm:text-xs font-bold w-fit">
@@ -786,6 +1069,11 @@ function FeatureCard({ badge, visual, title, description, className }: { badge?:
       <p className="text-sm sm:text-base text-[var(--saas-muted)] leading-relaxed h-full">
         {description}
       </p>
+      
+      {/* Visual Indicator */}
+      <div className="mt-6 flex items-center gap-2 text-[var(--saas-lime)] text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+        View Details <ArrowRight size={14} />
+      </div>
     </motion.div>
   );
 }
