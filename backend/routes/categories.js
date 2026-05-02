@@ -1,0 +1,18 @@
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory
+} from '../controllers/categoryController.js';
+
+const router = express.Router();
+
+router.get('/', authenticateToken, getCategories);
+router.post('/', authenticateToken, createCategory);
+router.put('/:categoryId', authenticateToken, updateCategory);
+router.delete('/:categoryId', authenticateToken, deleteCategory);
+
+export default router;
+
